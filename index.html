@@ -77,7 +77,6 @@
                 var item = steps[step]
                 var mindeg = deg - 90*step
                 var base = 100/90
-                var base = 1.11111
                 var nextitem = steps[step+1]
                 var show = nextitem[index] > item[index] ? mindeg*base : (item[index] -mindeg*base);
                 show = show>100?100:show;
@@ -103,15 +102,12 @@
                     if(step % 2 == 0){
 
                         str+=getDymPres(step,deg,0)
-                        
+
                     }else{
 
                         str+=getDymPres(step,deg,1)
                     }
                 }
-                
-
-
 
                 var clipstr = str+' 50% 50%, 0% 0%';
                 setPath(clipstr)
