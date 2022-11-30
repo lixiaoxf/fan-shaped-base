@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        *{
+            padding: 0;
+            margin: 0;
+        }
+        html ,body{
+            height: 100%;
+        }
+        .round {
+            width: 200px;
+            height: 200px;
+            margin: 20px;
+            border-radius: 50%;
+            background: #00b4c8;
+            transition: all ease .5s;
+            transform: rotate(-90deg);
+        }
+
+        img{
+            width: 100%;
+            transform: rotate(90deg);
+        }
+        
+    </style>
+</head>
+<body>
+
+
+    <div id="round" class="round">
+        <img src="./1.png">
+    </div>
+
+    <script>
+
+        function createDeg(select){
+            var  dom  = document.querySelectorAll(select)[0]
+            // var  step = [
+            //     '0% 0%, 0% 0%, 50% 50%, 0% 0%',
+            //     '0% 0%, 100% 0%,100% 0%, 50% 50%, 0% 0%',
+            //     '0% 0%, 100% 0%,100% 100%,100% 100%, 50% 50%, 0% 0%',
+            //     '0% 0%, 100% 0%, 100% 100%, 0% 100%, 0% 100%,50% 50%, 0% 0%'
+            // ]
+
+            var steps = [
+                [0,0],
+                [100,0],
+                [100,100],
+                [0,100],
+                [0,0]
+            ]
+
+
+            function getStepPath(step){
+                var ster = ''
+                var item = steps[step]
+                for(var i = 0; i<=step; i++){
+                    var item = steps[i]
+                    ster += item[0]+'% '+item[1]+'%,'
+                }
+
+                return ster
+            }
+
+            function setPath(clipstr){
+
+                dom.style = 'clip-path: polygon('+clipstr+')'
+            }
+
+            function setDeg(deg){
+                
+
+                var step = Math.floor(deg/90)
+                var str = getStepPath(step)
+                var mindeg = deg - 90*step
+                var base = 100/90
+                var item = steps[step]
+                var nextitem = steps[step+1]
+                if(step % 2 == 0){
+                    var show =   Math.ceil(nextitem[0] > item[0] ? mindeg*base : (item[0] -mindeg)*base);
+                    show = show>100?100:show;
+                    str += show+'% '+item[1]+'%,'
+                }else{
+                    var show = Math.ceil(nextitem[1] >item[1] ? mindeg*base : (item[1]-mindeg)*base);
+                    show = show>100?100:show;
+                    str += item[0]+'% '+show+'%,'
+                }
+
+
+                var clipstr = str+' 50% 50%, 0% 0%';
+                setPath(clipstr)
+            }
+            setDeg(0)
+            return {
+                setDeg
+            }
+        }
+
+       window.ru = createDeg('#round')
+       ru.setDeg(140)
+    </script>
+
+</body>
+</html>
