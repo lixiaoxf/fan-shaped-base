@@ -73,24 +73,44 @@
                 dom.style = 'clip-path: polygon('+clipstr+')'
             }
 
+            function getDymPres(step,deg,index){
+                var item = steps[step]
+                var mindeg = deg - 90*step
+                var base = 100/90
+                var base = 1.11111
+                var nextitem = steps[step+1]
+                var show = nextitem[index] > item[index] ? mindeg*base : (item[index] -mindeg*base);
+                show = show>100?100:show;
+                var str = '';
+                if(index==0){
+                    str += show+'% '+item[1]+'%,'
+                }else{
+                    str += item[0]+'% '+show+'%,'
+                }
+               return str;
+            }
+
             function setDeg(deg){
                 
 
                 var step = Math.floor(deg/90)
-                var str = getStepPath(step)
-                var mindeg = deg - 90*step
-                var base = 100/90
                 var item = steps[step]
-                var nextitem = steps[step+1]
-                if(step % 2 == 0){
-                    var show =   Math.ceil(nextitem[0] > item[0] ? mindeg*base : (item[0] -mindeg)*base);
-                    show = show>100?100:show;
-                    str += show+'% '+item[1]+'%,'
+                var str = getStepPath(step)
+                if(deg%90==0){
+                    str += item[0]+'% '+item[1]+'%,'
                 }else{
-                    var show = Math.ceil(nextitem[1] >item[1] ? mindeg*base : (item[1]-mindeg)*base);
-                    show = show>100?100:show;
-                    str += item[0]+'% '+show+'%,'
+
+                    if(step % 2 == 0){
+
+                        str+=getDymPres(step,deg,0)
+                        
+                    }else{
+
+                        str+=getDymPres(step,deg,1)
+                    }
                 }
+                
+
 
 
                 var clipstr = str+' 50% 50%, 0% 0%';
