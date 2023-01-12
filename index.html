@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -19,7 +21,6 @@
             margin: 20px;
             border-radius: 50%;
             background: #00b4c8;
-            transition: all ease .5s;
             transform: rotate(-90deg);
         }
 
@@ -34,19 +35,26 @@
 
 
     <div id="round" class="round">
-        <img src="./1.png">
+
     </div>
 
     <script>
+       
+
+        function easeLinear(t,b,c,d){
+            return c * t / d + b;
+        }
 
         function createDeg(select){
+            
             var  dom  = document.querySelectorAll(select)[0]
-            // var  step = [
-            //     '0% 0%, 0% 0%, 50% 50%, 0% 0%',
-            //     '0% 0%, 100% 0%,100% 0%, 50% 50%, 0% 0%',
-            //     '0% 0%, 100% 0%,100% 100%,100% 100%, 50% 50%, 0% 0%',
-            //     '0% 0%, 100% 0%, 100% 100%, 0% 100%, 0% 100%,50% 50%, 0% 0%'
-            // ]
+
+            var curDeg = 0;
+            var isRuning = false;
+            var easeInOption = {
+                t:0,
+                d:0.4
+            }
 
             var steps = [
                 [0,0],
@@ -56,6 +64,43 @@
                 [0,0]
             ]
 
+            function aniSetDeg(deg){
+                let target = deg;
+                let start = curDeg
+                let curtime = 0
+                let isStop = false;
+                let dec = 1
+                if( curDeg>deg){
+                    start = deg;
+                    target = curDeg;
+                    dec = -1
+                }
+                function stop(){
+                    curDeg = deg;
+                    isStop = true;
+                }
+                function __anisetDeg(starttime){
+                    let stepDeg = easeLinear(starttime,start,target,0.6)
+                    let setNum = dec == -1? (target - (stepDeg - start)) : stepDeg
+
+                    
+                    if(stepDeg >= target ){
+                        stop()
+              
+                        return ;
+                    }
+                    setDeg(setNum)
+                }
+                function loop(){
+                    if(isStop){
+                        return ;
+                    }
+                    curtime += 1/100
+                    __anisetDeg(curtime)
+                    requestAnimationFrame(loop)
+                }
+                loop()
+            }
 
             function getStepPath(step){
                 var ster = ''
@@ -114,12 +159,20 @@
             }
             setDeg(0)
             return {
-                setDeg
+                setDeg,
+                aniSetDeg
             }
         }
 
        window.ru = createDeg('#round')
-       ru.setDeg(140)
+        for(let i = 0 ; i < 100; i++){
+            (function(){
+                setTimeout(()=>{
+                    ru.aniSetDeg(270 * Math.random())
+                },1000*i)
+            })(i)
+
+        }
     </script>
 
 </body>
